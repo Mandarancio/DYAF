@@ -1,5 +1,4 @@
 #include "dyaf.h"
-#include <iostream>
 using namespace dyaf;
 
 inline bool ends_with(std::string const & value, std::string const & ending)
@@ -156,6 +155,9 @@ ASTNode* dyaf::Parser::parse(std::string code)
 
 std::vector<ASTNode*> dyaf::Parser::parse_code(std::string code, ASTNode * parent)
 {
+  if (!code.length())
+    return {};
+  
   std::vector<ASTNode*> leafs;
   Extension * current_symbol = nullptr;
   range current_range;
