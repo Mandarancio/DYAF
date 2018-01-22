@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <stdint.h>
 
 namespace dyaf {
@@ -20,7 +21,7 @@ namespace dyaf {
     
     virtual range match(std::string)=0;
     virtual std::string inner_code(std::string)=0;
-    virtual std::vector<std::string> arguments(std::string)=0;
+    virtual std::map<std::string, std::string> arguments(std::string)=0;
     
     
   private:
@@ -33,7 +34,7 @@ namespace dyaf {
     NoExtension();
     virtual range match(std::string);
     virtual std::string inner_code(std::string);
-    virtual std::vector<std::string> arguments(std::string);
+    virtual std::map<std::string, std::string> arguments(std::string);
   };
   
   class ASTNode {
@@ -44,7 +45,7 @@ namespace dyaf {
 
     std::string inner_code();
     std::string code();
-    std::vector<std::string> arguments();
+    std::map<std::string, std::string> arguments();
     Extension * generator();
     
     std::string to_str(std::string spacer="");
@@ -53,7 +54,7 @@ namespace dyaf {
     Extension * generator_;
     std::string code_;
     std::string inner_code_;
-    std::vector<std::string> args_;
+    std::map<std::string, std::string> args_;
     std::vector<ASTNode*> leafs_;
   };
   

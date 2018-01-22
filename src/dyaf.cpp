@@ -1,4 +1,5 @@
 #include "dyaf.h"
+
 using namespace dyaf;
 
 inline bool ends_with(std::string const & value, std::string const & ending)
@@ -38,9 +39,9 @@ std::string dyaf::NoExtension::inner_code(std::string code)
   return code;
 }
 
-std::vector<std::string> dyaf::NoExtension::arguments(std::string)
+std::map<std::string, std::string>  dyaf::NoExtension::arguments(std::string)
 {
-  return std::vector<std::string>();
+  return std::map<std::string, std::string>();
 }
   
 dyaf::ASTNode::ASTNode(std::string code, Extension * generator, ASTNode * parent):
@@ -73,7 +74,7 @@ std::string dyaf::ASTNode::code()
   return code_;
 }
 
-std::vector<std::string> dyaf::ASTNode::arguments()
+std::map<std::string, std::string> dyaf::ASTNode::arguments()
 {
   return args_;
 }
@@ -105,16 +106,21 @@ std::string dyaf::ASTNode::to_str(std::string spacer)
   } else {
     res += "── ";
   }
-  res += generator_->name() + "(";
-  for (auto arg : args_)
+  res += generator_->name();
+  if (args_.size())
   {
-    if (arg == args_[args_.size()-1])
-      res += arg;
-    else
-      res += arg+", ";
+    res += "(";
+    for (auto it = args_.begin(); it != args_.end(); ++it)
+    {
+      auto arg = *it;
+      res += arg.first+": "+arg.second;
+      if (std::next(it) != args_.end())
+      {
+        res += ", ";
+      }
+    }
+    res += ")";
   }
-  res += ")";
-  
   if (leafs_.size() > 0)
   {
     res += "\n";
@@ -127,9 +133,11 @@ std::string dyaf::ASTNode::to_str(std::string spacer)
         res += leaf->to_str(spacer+"│");
       }
     }
-  } else
+  } else if (inner_code_.length())
   {
-    res += ": [" + inner_code_ + "]\n";
+    res += ": \"" + inner_code_ + "\"\n";
+  } else {
+    res += "\n";
   }
   
   return res;
