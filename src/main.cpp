@@ -15,7 +15,7 @@ int main() {
   auto parser = dyaf::Parser(scidown::load_extension());
   std::cout<<parser.parse(code)->to_str()<<"\n";
   
-  code = "21.2*3+2";
+  code = "21.2*3+2/3";
   parser = dyaf::Parser(math::load_extension());
   std::cout<<parser.parse(code)->to_str()<<"\n";
   

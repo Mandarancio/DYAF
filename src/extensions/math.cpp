@@ -12,7 +12,7 @@ std::vector<dyaf::Extension*> math::load_extension()
     new OperatorExt("sum", "+", 3),
     new OperatorExt("sub", "-", 3),
     new OperatorExt("mul", "*", 2),
-    new OperatorExt("div", "/", 1),
+    new OperatorExt("div", "/", 2),
   };
 }
 
@@ -76,7 +76,6 @@ dyaf::range math::OperatorExt::match(std::string code)
 
 std::string math::OperatorExt::inner_code(std::string code)
 {
-  std::cout<<" >>> "<<code<<std::endl;
   size_t pos = code.find(symb);
   code[pos] = ' ';
   return code;

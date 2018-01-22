@@ -116,7 +116,7 @@ namespace scidown {
   };
   /***
   * Image Ext
-  * Example: ```![caption](url @reference size())````
+  * Example: ```![caption](url @reference size{geometry})```
   * */
   class ImageExt : public dyaf::Extension {
   public:
