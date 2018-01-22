@@ -71,6 +71,22 @@ void dyaf::ASTNode::leafs(std::vector<ASTNode*>ls)
   leafs_=ls;
 }
 
+std::vector<ASTNode*> dyaf::ASTNode::leafs()
+{
+  return leafs_;
+}
+
+bool dyaf::ASTNode::is_leaf()
+{
+  return !leafs_.size();  
+}
+
+
+std::string dyaf::ASTNode::type()
+{
+  return generator_->name();
+}
+
 std::string dyaf::ASTNode::inner_code()
 {
   return inner_code_;
@@ -214,4 +230,14 @@ std::vector<ASTNode*> dyaf::Parser::parse_code(std::string code, ASTNode * paren
     leafs.push_back(new ASTNode(code, no_symobl_, parent));
   }
   return leafs;
+}
+
+
+dyaf::CompilerException::CompilerException(std::string message) :
+  std::exception(), msg_(message)
+{}
+
+const char* dyaf::CompilerException::what() const throw()
+{
+  return (msg_).c_str();
 }

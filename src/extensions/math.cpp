@@ -85,3 +85,56 @@ std::map<std::string, std::string> math::OperatorExt::arguments(std::string)
 {
   return {};
 }
+
+std::vector<dyaf::ASTNode*> clean_tree(std::vector<dyaf::ASTNode*> leafs)
+{
+  std::vector<dyaf::ASTNode*> nodes;
+  for (auto node : leafs)
+  {
+    if (node->type() == "number" ||
+        node->type() == "sum"    ||
+        node->type() == "sub"    ||
+        node->type() == "mul"    ||
+        node->type() == "div")
+    {
+      nodes.push_back(node);
+    } else if (node->type() != "NaN")
+    {
+      throw dyaf::CompilerException("Unknown type \""+node->type()+"\" found at: "+node->code());
+    }
+  }
+  
+  return nodes;
+}
+
+double math::compile(dyaf::ASTNode * root){
+  if (root->type() == "NaN")
+  {
+    auto nodes = clean_tree(root->leafs());
+    if (nodes.size() != 1)
+    {
+      throw dyaf::CompilerException("Malformed expression:\n"+root->to_str("\t"));
+    }
+    return compile(nodes[0]);
+  }
+  if (root->type() == "number")
+  {
+    return std::stod(root->arguments()["number"]);
+  }
+  auto nodes = clean_tree(root->leafs());
+  if (nodes.size() !=2)
+  {
+    throw dyaf::CompilerException("Malformed expression:\n"+root->to_str("\t"));
+  }
+  double a = compile(nodes[0]);
+  double b = compile(nodes[1]);
+  if (root->type() == "sum")
+    return a + b;
+  if (root->type() == "sub")
+    return a - b;
+  if (root->type() == "div")
+    return a / b;
+  if (root->type() == "mul")
+    return a * b;
+  throw dyaf::CompilerException("Unknown operation \""+root->type()+"\" at:\n"+root->to_str("\t"));
+}

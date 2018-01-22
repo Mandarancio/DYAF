@@ -41,7 +41,12 @@ namespace dyaf {
   public:
     ASTNode(std::string code, Extension * generator, ASTNode * parent);
     virtual ~ASTNode();
+    
     void leafs(std::vector<ASTNode*>);
+    std::vector<ASTNode*> leafs();
+    bool is_leaf();
+    
+    std::string type();
 
     std::string inner_code();
     std::string code();
@@ -74,6 +79,16 @@ namespace dyaf {
     
     std::vector<ASTNode*> parse_code(std::string code, ASTNode * parent);
   };
+  
+  class CompilerException: public std::exception
+  {
+  public:
+    CompilerException(std::string message);
+    virtual const char* what() const throw();
+  private:
+    std::string msg_;
+  };
+  
   
 };
 #endif 

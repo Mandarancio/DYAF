@@ -25,6 +25,7 @@ namespace math {
   };
   
   std::vector<dyaf::Extension*> load_extension();
+  double compile(dyaf::ASTNode * root);
 };
 
 #endif
