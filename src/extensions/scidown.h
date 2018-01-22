@@ -1,5 +1,5 @@
-#ifndef __EXTENSIONS_H__
-#define __EXTENSIONS_H__
+#ifndef __SCIDOWN_H__
+#define __SCIDOWN_H__
 
 #include "../dyaf.h"
 
@@ -126,7 +126,7 @@ namespace scidown {
     virtual std::map<std::string, std::string> arguments(std::string);
   private:
     std::string get_key(std::string arg);
-    std::string get_value(std::string arg);
+    std::string get_value(std::string arg, std::string key);
   };
 
   /***

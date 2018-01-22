@@ -1,8 +1,22 @@
 #include "scidown.h"
 
 #include <regex>
+#include <iostream>
 
 using namespace dyaf;
+
+inline bool ends_with(std::string const & value, std::string const & ending)
+{
+    if (ending.size() > value.size()) return false;
+    return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
+}
+
+inline bool starts_with(std::string const & value, std::string const & starting)
+{
+    if (starting.size() > value.size()) return false;
+    return std::equal(starting.begin(), starting.end(), starting.begin());
+}
+
 
 std::vector<Extension*> scidown::load_extension()
 {
@@ -359,14 +373,17 @@ std::map<std::string, std::string> scidown::ImageExt::arguments(std::string code
    
    size_t pos = image.find(" ");
    args["image"] = image.substr(0, pos);
-   while (pos < image.length()-1)
+   std::regex split("\\s+");
+   next = std::sregex_iterator(image.begin()+pos+1, image.end(), split);
+   for ( ; next != end; ++next)
+
    {
-     size_t next = image.find(" ", pos+1);
-     std::string arg = image.substr(pos+1, next);
+     match = *next;
+     std::string arg = image.substr(pos+1, match.position());
      std::string key = this->get_key(arg);
-     std::string value = this->get_value(arg);
+     std::string value = this->get_value(arg, key);
      args[key] = value;
-     pos = next;
+     pos += 1+match.position();
    }
    return args;
 }
@@ -377,14 +394,23 @@ std::string scidown::ImageExt::get_key(std::string arg)
   {
     return "reference";
   }
+  if (starts_with(arg, "size{") && ends_with(arg, "}"))
+  {
+    return "size";
+  }
   return "";
 }
 
-std::string scidown::ImageExt::get_value(std::string arg)
+std::string scidown::ImageExt::get_value(std::string arg, std::string key)
 {
-  if (arg[0] == '@')
+  if (key == "reference")
   {
     return arg.substr(1, arg.length()-1);
+  }
+  if (key == "size")
+  {
+    arg = arg.substr(5, arg.length()-6);
+    return arg;
   }
   return arg;
 }
