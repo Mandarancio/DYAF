@@ -14,7 +14,8 @@ std::vector<Extension*> scidown::load_extension()
     new scidown::ItalicExt(),
     new scidown::DelExt(),
     new scidown::UnderlineExt(),
-    new scidown::LinkExt()
+    new scidown::LinkExt(),
+    new scidown::ReferenceExt()
   };
 }
 
@@ -216,7 +217,7 @@ scidown::LinkExt::LinkExt() :
 range scidown::LinkExt::match(std::string code)
 {
   range r = {-1, -1};
-  //\[([^\[]+)\]\(([^\)]+)\)/
+  
   std::regex re("\\[([^\\[]+)\\]\\(([^\\)]+)");
   std::sregex_iterator next(code.begin(), code.end(), re);
   std::sregex_iterator end;
@@ -230,7 +231,6 @@ range scidown::LinkExt::match(std::string code)
   
   r.start = match.position();
   r.end = match.str().length()+1;
-  return r;
   return r;
 }
 
@@ -264,5 +264,40 @@ std::vector<std::string> scidown::LinkExt::arguments(std::string code)
   std::string url = match.str();
   args.push_back(url.substr(1, url.length()-1));
   return args;
+}
+
+scidown::ReferenceExt::ReferenceExt():
+  Extension("reference", 0)
+{}
+
+dyaf::range scidown::ReferenceExt::match(std::string code)
+{
+  range r = {-1, -1};
+
+  std::regex re("@\\(([^\\)]+)");
+  std::sregex_iterator next(code.begin(), code.end(), re);
+  std::sregex_iterator end;
+  
+  if (next == end)
+  {
+    return r;
+  }
+  
+  std::smatch match = *next;
+  
+  r.start = match.position();
+  r.end = match.str().length()+1;
+  return r;
+}
+
+
+std::string scidown::ReferenceExt::inner_code(std::string)
+{
+  return "";
+}
+
+std::vector<std::string> scidown::ReferenceExt::arguments(std::string code)
+{
+  return {code.substr(2, code.length()-3)};
 }
  
