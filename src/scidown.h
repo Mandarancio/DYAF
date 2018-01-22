@@ -94,6 +94,18 @@ namespace scidown{
   public:
     UnderlineExt();
   };
+  
+  /***
+  * Link Ext
+  * Example: ```[text](url)````
+  * */
+  class LinkExt : public dyaf::Extension {
+  public:
+    LinkExt();
+    virtual dyaf::range match(std::string);
+    virtual std::string inner_code(std::string);
+    virtual std::vector<std::string> arguments(std::string);
+  };
    
    std::vector<dyaf::Extension*> load_extension();
 };

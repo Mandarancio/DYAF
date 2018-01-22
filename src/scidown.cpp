@@ -1,6 +1,5 @@
 #include "scidown.h"
 
-#include <iostream>
 #include <regex>
 
 using namespace dyaf;
@@ -13,7 +12,8 @@ std::vector<Extension*> scidown::load_extension()
     new scidown::LineExt(),
     new scidown::BoldExt(),
     new scidown::ItalicExt(),
-    new scidown::UnderlineExt()
+    new scidown::UnderlineExt(),
+    new scidown::LinkExt()
   };
 }
 
@@ -202,3 +202,62 @@ scidown::ItalicExt::ItalicExt():
 scidown::UnderlineExt::UnderlineExt():
   scidown::BasicExt("_", 1, "underline", -2)
 {}
+
+
+scidown::LinkExt::LinkExt() :
+  Extension("link", 2)
+{}
+
+range scidown::LinkExt::match(std::string code)
+{
+  range r = {-1, -1};
+  //\[([^\[]+)\]\(([^\)]+)\)/
+  std::regex re("\\[([^\\[]+)\\]\\(([^\\)]+)");
+  std::sregex_iterator next(code.begin(), code.end(), re);
+  std::sregex_iterator end;
+  
+  if (next == end)
+  {
+    return r;
+  }
+  
+  std::smatch match = *next;
+  
+  r.start = match.position();
+  r.end = match.str().length()+1;
+  return r;
+  return r;
+}
+
+std::string scidown::LinkExt::inner_code(std::string)
+{
+  return "";
+}
+
+std::vector<std::string> scidown::LinkExt::arguments(std::string code)
+{
+  std::vector<std::string> args;
+  std::regex inner("\\[([^\\[]+)\\]");
+  std::regex outter("\\(([^\\)]+)");
+  std::sregex_iterator next(code.begin(), code.end(), inner);
+  std::sregex_iterator end;
+  
+  if (next == end)
+  {
+    return args;
+  }
+  
+  std::smatch match = *next;
+  std::string text = match.str();
+  args.push_back(text.substr(1, text.length()-2));
+  next = std::sregex_iterator(code.begin(), code.end(), outter);
+  if (next == end)
+  {
+    return args;
+  }
+  match = *next;
+  std::string url = match.str();
+  args.push_back(url.substr(1, url.length()-1));
+  return args;
+}
+ 
