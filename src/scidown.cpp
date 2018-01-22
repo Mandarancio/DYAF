@@ -12,6 +12,7 @@ std::vector<Extension*> scidown::load_extension()
     new scidown::LineExt(),
     new scidown::BoldExt(),
     new scidown::ItalicExt(),
+    new scidown::DelExt(),
     new scidown::UnderlineExt(),
     new scidown::LinkExt()
   };
@@ -197,6 +198,10 @@ scidown::BoldExt::BoldExt():
 
 scidown::ItalicExt::ItalicExt():
   scidown::BasicExt("-", 1, "italic", -2)
+{}
+
+scidown::DelExt::DelExt():
+  scidown::BasicExt("~", 1, "deleted", -2)
 {}
 
 scidown::UnderlineExt::UnderlineExt():

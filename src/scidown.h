@@ -79,7 +79,7 @@ namespace scidown{
    
   /***
   * Italic Ext
-  * Example: ```-Bold text-````
+  * Example: ```-Italic text-````
   * */
   class ItalicExt : public BasicExt {
   public:
@@ -87,8 +87,17 @@ namespace scidown{
   };
   
   /***
+  * Del Ext
+  * Example: ```~Deleted text~````
+  * */
+  class DelExt : public BasicExt {
+  public:
+    DelExt();
+  };
+  
+  /***
   * Underline Ext
-  * Example: ```_Bold text_````
+  * Example: ```_Underlined text_````
   * */
   class UnderlineExt : public BasicExt {
   public:
