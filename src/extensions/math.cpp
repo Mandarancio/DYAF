@@ -113,7 +113,7 @@ double math::compile(dyaf::ASTNode * root){
     auto nodes = clean_tree(root->leafs());
     if (nodes.size() != 1)
     {
-      throw dyaf::CompilerException("Malformed expression:\n"+root->to_str("\t"));
+      throw dyaf::CompilerException("Malformed expression:\n"+root->to_str(""));
     }
     return compile(nodes[0]);
   }
@@ -124,7 +124,7 @@ double math::compile(dyaf::ASTNode * root){
   auto nodes = clean_tree(root->leafs());
   if (nodes.size() !=2)
   {
-    throw dyaf::CompilerException("Malformed expression:\n"+root->to_str("\t"));
+    throw dyaf::CompilerException("Malformed expression:\n"+root->to_str(""));
   }
   double a = compile(nodes[0]);
   double b = compile(nodes[1]);
@@ -136,5 +136,5 @@ double math::compile(dyaf::ASTNode * root){
     return a / b;
   if (root->type() == "mul")
     return a * b;
-  throw dyaf::CompilerException("Unknown operation \""+root->type()+"\" at:\n"+root->to_str("\t"));
+  throw dyaf::CompilerException("Unknown operation \""+root->type()+"\" at:\n"+root->to_str(""));
 }
