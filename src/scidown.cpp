@@ -11,7 +11,9 @@ std::vector<Extension*> scidown::load_extension()
     new scidown::ChapterExt(),
     new scidown::SubChapterExt(),
     new scidown::LineExt(),
-    new scidown::BoldExt()
+    new scidown::BoldExt(),
+    new scidown::ItalicExt(),
+    new scidown::UnderlineExt()
   };
 }
 
@@ -154,16 +156,16 @@ std::vector<std::string> scidown::SubChapterExt::arguments(std::string code)
   return args;
 }
 
-
-scidown::BoldExt::BoldExt():
-  Extension("bold", -2)
+scidown::BasicExt::BasicExt(std::string regex, size_t rel, std::string name, int32_t priority):
+  Extension(name, priority), regex(regex), r_length(rel)
 {}
 
-range scidown::BoldExt::match(std::string code)
+
+range scidown::BasicExt::match(std::string code)
 {
   range r = {-1, -1};
   
-  std::regex re("\\*(.*?)\\*");
+  std::regex re(regex+"(.*?)"+regex);
   std::sregex_iterator next(code.begin(), code.end(), re);
   std::sregex_iterator end;
   
@@ -179,12 +181,24 @@ range scidown::BoldExt::match(std::string code)
   return r;
 }
 
-std::string scidown::BoldExt::inner_code(std::string code)
+std::string scidown::BasicExt::inner_code(std::string code)
 {
-  return code.substr(1, code.length()-2);
+  return code.substr(r_length, code.length()-2*r_length);
 }
 
-std::vector<std::string> scidown::BoldExt::arguments(std::string)
+std::vector<std::string> scidown::BasicExt::arguments(std::string)
 {
   return {};
 }
+
+scidown::BoldExt::BoldExt():
+  scidown::BasicExt("\\*", 1, "bold", -2)
+{}
+
+scidown::ItalicExt::ItalicExt():
+  scidown::BasicExt("-", 1, "italic", -2)
+{}
+
+scidown::UnderlineExt::UnderlineExt():
+  scidown::BasicExt("_", 1, "underline", -2)
+{}

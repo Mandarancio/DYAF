@@ -8,6 +8,36 @@
  ***/
 
 namespace scidown{
+  
+  /***
+   * Simple extension for syntax of the type:
+   * ```/text/``` where / is the regex
+   * */
+  class BasicExt : public dyaf::Extension {
+  public:
+    BasicExt(std::string regx, size_t rel, std::string name, int32_t priority);
+    virtual dyaf::range match(std::string);
+    virtual std::string inner_code(std::string);
+    virtual std::vector<std::string> arguments(std::string);
+  private:
+    std::string regex;
+    size_t r_length;
+  };
+  
+  
+  /***
+   * Simple extension for line splitting
+   * */
+  class LineExt : public dyaf::Extension {
+  public:
+    LineExt();
+    
+    virtual dyaf::range match(std::string);
+    virtual std::string inner_code(std::string);
+    virtual std::vector<std::string> arguments(std::string);
+     
+  };
+  
   /***
    * Chapter extension:
    * A chapter start with a line of type: ``` # TITLE ``` and ends
@@ -16,16 +46,6 @@ namespace scidown{
   class ChapterExt : public dyaf::Extension {
   public:
     ChapterExt();
-    
-    virtual dyaf::range match(std::string);
-    virtual std::string inner_code(std::string);
-    virtual std::vector<std::string> arguments(std::string);
-     
-  };
-  
-  class LineExt : public dyaf::Extension {
-  public:
-    LineExt();
     
     virtual dyaf::range match(std::string);
     virtual std::string inner_code(std::string);
@@ -46,19 +66,34 @@ namespace scidown{
     virtual std::string inner_code(std::string);
     virtual std::vector<std::string> arguments(std::string);
   };
+
   
   /***
-   * Bold Ext
-   * Example: ```*Bold text*````
-   * */
-   class BoldExt : public dyaf::Extension {
-   public:
-     BoldExt();
-     
-     virtual dyaf::range match(std::string);
-     virtual std::string inner_code(std::string);
-     virtual std::vector<std::string> arguments(std::string);
-   };
+  * Bold Ext
+  * Example: ```*Bold text*````
+  * */
+  class BoldExt : public BasicExt {
+  public:
+    BoldExt();
+  };
+   
+  /***
+  * Italic Ext
+  * Example: ```-Bold text-````
+  * */
+  class ItalicExt : public BasicExt {
+  public:
+    ItalicExt();
+  };
+  
+  /***
+  * Underline Ext
+  * Example: ```_Bold text_````
+  * */
+  class UnderlineExt : public BasicExt {
+  public:
+    UnderlineExt();
+  };
    
    std::vector<dyaf::Extension*> load_extension();
 };
