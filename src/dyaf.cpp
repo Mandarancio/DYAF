@@ -1,7 +1,12 @@
 #include "dyaf.h"
-
+#include <iostream>
 using namespace dyaf;
 
+inline bool ends_with(std::string const & value, std::string const & ending)
+{
+    if (ending.size() > value.size()) return false;
+    return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
+}
 
 dyaf::Extension::Extension(std::string name, int32_t priority):
   name_(name), priority_(priority)
@@ -81,8 +86,26 @@ Extension * dyaf::ASTNode::generator()
 
 std::string dyaf::ASTNode::to_str(std::string spacer)
 {
-  std::string res = spacer;
   
+  std::string res = spacer;
+  if (res.size())
+  {
+    if (ends_with(res, "│"))
+    {
+      res = res.substr(0, res.length()-3);
+      res += "├";
+    } else{
+      res = res.substr(0, res.length()-1);
+      res += "└";
+    }
+  }
+
+  if (leafs_.size())
+  {
+    res += "┬─ ";
+  } else {
+    res += "── ";
+  }
   res += generator_->name() + "(";
   for (auto arg : args_)
   {
@@ -98,7 +121,12 @@ std::string dyaf::ASTNode::to_str(std::string spacer)
     res += "\n";
     for (auto *leaf : leafs_)
     {
-      res += leaf->to_str(spacer+" ");
+      if (leaf == leafs_[leafs_.size()-1]){
+        res += leaf->to_str(spacer+" ");
+      }
+      else{
+        res += leaf->to_str(spacer+"│");
+      }
     }
   } else
   {
