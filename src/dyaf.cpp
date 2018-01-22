@@ -8,6 +8,13 @@ inline bool ends_with(std::string const & value, std::string const & ending)
     return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
 }
 
+inline bool starts_with(std::string const & value, std::string const & starting)
+{
+    if (starting.size() > value.size()) return false;
+    return std::equal(starting.begin(), starting.end(), starting.begin());
+}
+
+
 dyaf::Extension::Extension(std::string name, int32_t priority):
   name_(name), priority_(priority)
 {}
